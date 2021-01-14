@@ -13,6 +13,7 @@ export class PostResolver {
   post(@Arg("id") id: number, @Ctx() { em }: MyContext): Promise<Post | null> {
     return em.findOne(Post, { id });
   }
+
   @Mutation(() => Post)
   async createPost(
     @Arg("title") title: string,
@@ -22,6 +23,7 @@ export class PostResolver {
     await em.persistAndFlush(post);
     return post;
   }
+
   @Mutation(() => Post, { nullable: true })
   async updatePost(
     @Arg("id") id: number,
@@ -37,5 +39,14 @@ export class PostResolver {
       await em.persistAndFlush(post);
     }
     return post;
+  }
+
+  @Mutation(() => Boolean)
+  async deletePost(
+    @Arg("id") id: number,
+    @Ctx() { em }: MyContext
+  ): Promise<boolean> {
+    await em.nativeDelete(Post, { id });
+    return true;
   }
 }
